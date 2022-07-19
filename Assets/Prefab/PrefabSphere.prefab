@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -1674389196037780908}
   m_Layer: 0
   m_Name: PrefabSphere
-  m_TagString: Untagged
+  m_TagString: PrefabObj
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

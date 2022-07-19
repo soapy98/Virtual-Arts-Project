@@ -13,6 +13,12 @@ public class PrefabBase : MonoBehaviour
             {
                 obj.AddComponent<EditableObject>();
             }
+            if (!obj.GetComponent<Rigidbody>())
+            {
+                obj.AddComponent<Rigidbody>();
+            }
+
+            obj.tag = "SpawnObject";
             Destroy(obj.GetComponent<PrefabBase>());
             obj.transform.position -= new Vector3(0, 0, 3);
         }

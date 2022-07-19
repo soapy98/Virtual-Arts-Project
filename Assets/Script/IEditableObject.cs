@@ -2,64 +2,83 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Collider))]
+[RequireComponent(typeof(Rigidbody))]
 public class IEditableObject : MonoBehaviour
 {
-    private bool Click;
-    public bool IsClicked
+    private Camera mainCam;
+    private float ZDist;
+    [SerializeField] private bool Click;
+    [SerializeField] private bool Locked;
+    [SerializeField] private bool Grouped;
+
+    public virtual bool IsClicked
     {
         get => Click;
         set => Click = value;
     }
-    private bool Grouped;
+
+
     public bool IsGrouped
     {
         get => Grouped;
         set => Grouped = value;
     }
-    private bool Locked;
+
+
     public bool LockedIn
     {
         get => Locked;
         set => Locked = value;
     }
+
+    private void Start()
+    {
+        mainCam = Camera.main;
+        ZDist = mainCam.WorldToScreenPoint(transform.position).z;
+    }
+
     void Update()
     {
-        
     }
+
     private void OnMouseOver()
     {
+        if (Input.GetMouseButtonDown(0))
+        {
+            ClickObj();
+        }
+
         if (Input.GetKeyDown(KeyCode.Delete))
         {
             Destroy(gameObject);
         }
-        if (Input.GetKeyDown(KeyCode.A))
+
+        if (Click)
         {
-            var a = transform.position;
-            a.z += 3;
-            transform.position = a;
-        }
-        if (Input.GetMouseButtonDown(0))
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit raycastHit;
-
-            if (Physics.Raycast(ray, out raycastHit, Mathf.Infinity))
-            {
-
-                float step = 2 * Time.deltaTime;
-                transform.position = Vector3.MoveTowards(transform.position, transform.position, step);
-
-            }
+            MoveObj();
         }
     }
-    public virtual void MouseMove()
-    {
 
-    }
     public virtual void Rotate()
     {
-
-
     }
 
+    public virtual void MoveObj()
+    {
+        Vector3 ScreenPos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, ZDist);
+        Vector3 NewPos = mainCam.ScreenToWorldPoint(ScreenPos);
+        transform.position = NewPos;
+    }
+
+    public void OnMouseDrag()
+    {
+        MoveObj();
+    }
+
+    public virtual void ClickObj()
+    {
+        GetComponent<Renderer>().material.color = Click ? Color.blue : Color.green;
+        Click = !Click;
+    }
 }
